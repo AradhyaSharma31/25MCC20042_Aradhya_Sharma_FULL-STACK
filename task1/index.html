@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Infinite Scroll</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .loader {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      display: none;
+    }
+
+    .shimmer {
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 10px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Infinite Scroll</h1>
+
+  <div class="container" id="container"></div>
+
+  <div class="loader" id="loader">
+    <div class="shimmer"></div>
+  </div>
+
+  <script>
+    const container = document.getElementById("container");
+    const loader = document.getElementById("loader");
+
+    let page = 1;
+    let loading = false;
+
+    function loadCards() {
+      if (loading) return;
+
+      loading = true;
+      loader.style.display = "block";
+
+      setTimeout(() => {
+        for (let i = 1; i <= 10; i++) {
+          const card = document.createElement("div");
+          card.classList.add("card");
+
+          card.innerHTML = `
+            <h3>Post ${page}</h3>
+            <p>
+              This is dynamically loaded content.
+              Scroll down to load more items.
+            </p>
+          `;
+
+          page += 1;
+
+          container.appendChild(card);
+        }
+
+        loading = false;
+        loader.style.display = "none";
+      }, 1000);
+    }
+
+    window.addEventListener("scroll", () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      if (scrollTop + windowHeight >= documentHeight - 200) {
+        loadCards();
+      }
+    });
+
+    loadCards();
+
+    
+  </script>
+
+</body>
+</html>
